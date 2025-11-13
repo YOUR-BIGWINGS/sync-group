@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Functional Projects - Sync Group</title>
+    <title>Upcoming Projects - Sync Group</title>
     <style>
       * {
         margin: 0;
@@ -777,7 +777,7 @@
       <div class="container">
         <div class="header-content">
           <a href="index.html" class="back-button">← Back to Home</a>
-          <h1>Functional Projects</h1>
+          <h1>Upcoming Projects</h1>
           <button
             class="edit-projects-button"
             id="editProjectsButton"
@@ -792,8 +792,8 @@
     <main>
       <div class="container">
         <div class="page-header">
-          <h2>Active Functional Projects</h2>
-          <p>Projects that are currently live and operational</p>
+          <h2>Projects in Planning</h2>
+          <p>Ideas and concepts for future projects</p>
         </div>
 
         <div class="projects-container">
@@ -808,9 +808,9 @@
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
-            <h3>No Projects Yet</h3>
+            <h3>No Upcoming Projects Yet</h3>
             <p>
-              Click the edit icon in the footer to add your first functional
+              Click the edit icon in the footer to add your first upcoming
               project
             </p>
           </div>
@@ -1024,14 +1024,14 @@
 
       // Load projects from localStorage
       function loadProjects() {
-        const stored = localStorage.getItem("functionalProjects");
+        const stored = localStorage.getItem("upcomingProjects");
         projects = stored ? JSON.parse(stored) : [];
         renderProjects();
       }
 
       // Save projects to localStorage
       function saveProjects() {
-        localStorage.setItem("functionalProjects", JSON.stringify(projects));
+        localStorage.setItem("upcomingProjects", JSON.stringify(projects));
         renderProjects();
       }
 
