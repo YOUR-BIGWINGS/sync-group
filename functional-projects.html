@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Functional Projects - Sync Group</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(
+          135deg,
+          #0f1419 0%,
+          #1a2332 50%,
+          #0f1419 100%
+        );
+        color: #e8eaed;
+        line-height: 1.7;
+        min-height: 100vh;
+        position: relative;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .grid-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(
+            rgba(255, 0, 0, 0.02) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(255, 0, 0, 0.02) 1px, transparent 1px);
+        background-size: 60px 60px;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      header {
+        background: linear-gradient(
+          180deg,
+          rgba(26, 35, 50, 0.95) 0%,
+          rgba(15, 20, 25, 0.95) 100%
+        );
+        backdrop-filter: blur(10px);
+        border-bottom: 2px solid rgba(255, 0, 0, 0.3);
+        padding: 2rem 0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        position: relative;
+        z-index: 10;
+      }
+
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .back-button {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 0, 0, 0.2),
+          rgba(204, 0, 0, 0.2)
+        );
+        border: 2px solid rgba(255, 0, 0, 0.4);
+        color: #ff7d8b;
+        padding: 0.6rem 1.2rem;
+        text-decoration: none;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+      }
+
+      .back-button:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 0, 0, 0.3),
+          rgba(204, 0, 0, 0.3)
+        );
+        border-color: rgba(255, 0, 0, 0.6);
+        transform: translateY(-2px);
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        font-weight: 300;
+        letter-spacing: 3px;
+        color: #ffffff;
+        text-transform: uppercase;
+        text-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+      }
+
+      .edit-projects-button {
+        background: linear-gradient(135deg, #10b981, #059669);
+        border: none;
+        color: #ffffff;
+        padding: 0.6rem 1.2rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+
+      .edit-projects-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+      }
+
+      .edit-projects-button.active {
+        background: linear-gradient(135deg, #dc2626, #991b1b);
+      }
+
+      .edit-button {
+        position: absolute;
+        right: 16px;
+        bottom: 16px;
+        width: 34px;
+        height: 34px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #a6b0bb;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        backdrop-filter: blur(4px);
+        z-index: 1100;
+      }
+
+      .edit-button:hover {
+        border-color: rgba(255, 255, 255, 0.22);
+        color: #e8eaed;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+      }
+
+      .edit-button svg {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+      }
+
+      .edit-button.is-edit-mode {
+        color: #7ae7c7;
+        border-color: rgba(122, 231, 199, 0.35);
+        box-shadow: 0 0 0 3px rgba(122, 231, 199, 0.12);
+      }
+
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      main {
+        padding: 3rem 0;
+        position: relative;
+        z-index: 1;
+        min-height: calc(100vh - 200px);
+      }
+
+      .page-header {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .page-header h2 {
+        font-size: 2rem;
+        font-weight: 300;
+        margin-bottom: 1rem;
+        color: #ffffff;
+        letter-spacing: 2px;
+      }
+
+      .page-header p {
+        color: #a8b8c8;
+        font-size: 1.05rem;
+      }
+
+      .projects-container {
+        background: linear-gradient(
+          135deg,
+          rgba(26, 35, 50, 0.8) 0%,
+          rgba(20, 28, 40, 0.8) 100%
+        );
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 0, 0, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        padding: 3rem;
+        min-height: 500px;
+      }
+
+      /* Sidebar Styles (shared with index) */
+      .sidebar-toggle {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1000;
+        background: linear-gradient(
+          135deg,
+          rgba(26, 35, 50, 0.95),
+          rgba(20, 28, 40, 0.95)
+        );
+        border: 2px solid rgba(255, 0, 0, 0.4);
+        border-radius: 8px;
+        padding: 12px 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      }
+
+      .sidebar-toggle:hover {
+        border-color: rgba(255, 0, 0, 0.7);
+        box-shadow: 0 4px 20px rgba(255, 0, 0, 0.3);
+        transform: scale(1.05);
+      }
+
+      .hamburger {
+        width: 25px;
+        height: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .hamburger span {
+        display: block;
+        height: 3px;
+        background: #ff7d8b;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+      }
+
+      .sidebar-toggle.active .hamburger span:nth-child(1) {
+        transform: rotate(45deg) translate(7px, 7px);
+      }
+
+      .sidebar-toggle.active .hamburger span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .sidebar-toggle.active .hamburger span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -7px);
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: -320px;
+        width: 320px;
+        height: 100vh;
+        background: linear-gradient(
+          180deg,
+          rgba(26, 35, 50, 0.98) 0%,
+          rgba(15, 20, 25, 0.98) 100%
+        );
+        backdrop-filter: blur(20px);
+        border-right: 2px solid rgba(255, 0, 0, 0.3);
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5);
+        transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 999;
+        overflow-y: auto;
+        padding: 80px 0 30px;
+      }
+
+      .sidebar.active {
+        left: 0;
+      }
+
+      .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.4s ease;
+        z-index: 998;
+      }
+
+      .sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .sidebar-header {
+        padding: 0 30px 20px;
+        border-bottom: 1px solid rgba(255, 0, 0, 0.2);
+        margin-bottom: 20px;
+      }
+
+      .sidebar-header h2 {
+        font-size: 1.5rem;
+        font-weight: 300;
+        color: #ffffff;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+      }
+
+      .sidebar-header p {
+        font-size: 0.85rem;
+        color: #ff7d8b;
+        letter-spacing: 1px;
+      }
+
+      .sidebar-section {
+        padding: 0 30px;
+        margin-bottom: 30px;
+      }
+
+      .sidebar-section-title {
+        font-size: 0.8rem;
+        color: #a8b8c8;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 15px;
+        font-weight: 600;
+      }
+
+      .sidebar-nav {
+        list-style: none;
+      }
+
+      .sidebar-nav li {
+        margin-bottom: 8px;
+      }
+
+      .sidebar-nav a {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        color: #e8eaed;
+        text-decoration: none;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+        font-size: 0.95rem;
+        letter-spacing: 0.5px;
+      }
+
+      .sidebar-nav a:hover {
+        background: rgba(255, 0, 0, 0.1);
+        border-color: rgba(255, 0, 0, 0.3);
+        transform: translateX(5px);
+        color: #ffffff;
+      }
+
+      .sidebar-nav a.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .sidebar-nav a.disabled:hover {
+        transform: none;
+        background: transparent;
+        border-color: transparent;
+      }
+
+      .sidebar-nav a::before {
+        content: "▸";
+        margin-right: 10px;
+        color: #ff7d8b;
+        transition: transform 0.3s ease;
+      }
+
+      .sidebar-nav a:hover::before {
+        transform: translateX(3px);
+      }
+
+      .coming-soon-badge {
+        margin-left: auto;
+        background: linear-gradient(135deg, #ff0000, #cc0000);
+        color: #ffffff;
+        padding: 2px 8px;
+        font-size: 0.65rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        border-radius: 3px;
+        font-weight: 600;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #a8b8c8;
+      }
+
+      .empty-state svg {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 1.5rem;
+        opacity: 0.5;
+      }
+
+      .empty-state h3 {
+        font-size: 1.5rem;
+        font-weight: 300;
+        margin-bottom: 1rem;
+        color: #ffffff;
+      }
+
+      .empty-state p {
+        font-size: 1rem;
+      }
+
+      .project-list {
+        list-style: none;
+        display: none;
+      }
+
+      .project-item {
+        background: rgba(15, 20, 25, 0.6);
+        border: 1px solid rgba(255, 0, 0, 0.2);
+        border-radius: 8px;
+        padding: 2rem 2.5rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        min-height: 120px;
+      }
+
+      .project-item:hover {
+        border-color: rgba(255, 0, 0, 0.4);
+        transform: translateX(5px);
+      }
+
+      .project-icon {
+        flex-shrink: 0;
+        width: 64px;
+        height: 64px;
+        border-radius: 10px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.05);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(255, 0, 0, 0.15);
+      }
+
+      .project-icon img {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
+      }
+
+      .project-content {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .project-name {
+        font-size: 1.3rem;
+        font-weight: 400;
+        margin-bottom: 0.5rem;
+      }
+
+      .project-name a {
+        color: #ffffff;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .project-name a:hover {
+        color: #ff7d8b;
+        text-decoration: underline;
+      }
+
+      .project-description {
+        color: #a8b8c8;
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background: linear-gradient(
+          135deg,
+          rgba(26, 35, 50, 0.98) 0%,
+          rgba(20, 28, 40, 0.98) 100%
+        );
+        backdrop-filter: blur(20px);
+        border: 2px solid rgba(255, 0, 0, 0.3);
+        border-radius: 8px;
+        padding: 2.5rem;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      }
+
+      .modal-header {
+        margin-bottom: 2rem;
+        text-align: center;
+      }
+
+      .modal-header h2 {
+        font-size: 1.8rem;
+        font-weight: 300;
+        color: #ffffff;
+        letter-spacing: 2px;
+        margin-bottom: 0.5rem;
+      }
+
+      .modal-header p {
+        color: #a8b8c8;
+        font-size: 0.9rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #ffffff;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+      }
+
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        padding: 0.8rem;
+        background: rgba(15, 20, 25, 0.8);
+        border: 1px solid rgba(255, 0, 0, 0.3);
+        border-radius: 4px;
+        color: #e8eaed;
+        font-family: inherit;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: rgba(255, 0, 0, 0.6);
+        box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin-top: 2rem;
+      }
+
+      .btn {
+        padding: 0.7rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #ff0000, #cc0000);
+        color: #ffffff;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: #e8eaed;
+        border: 1px solid rgba(255, 0, 0, 0.3);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .error-message {
+        color: #ff6b6b;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+        display: none;
+      }
+
+      .error-message.active {
+        display: block;
+      }
+
+      /* Edit mode - make projects clickable */
+      body.edit-mode .project-item {
+        cursor: pointer;
+      }
+
+      body.edit-mode .project-item:hover {
+        background: rgba(16, 185, 129, 0.1);
+        border-color: rgba(16, 185, 129, 0.4);
+      }
+
+      /* Authenticated mode - make projects editable */
+      .project-item.editable {
+        cursor: pointer;
+      }
+
+      .project-item.editable:hover {
+        background: rgba(16, 185, 129, 0.08);
+        border-color: rgba(16, 185, 129, 0.35);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      }
+
+      footer {
+        background: linear-gradient(
+          180deg,
+          rgba(15, 20, 25, 0.95) 0%,
+          rgba(10, 14, 19, 0.95) 100%
+        );
+        border-top: 2px solid rgba(255, 0, 0, 0.3);
+        padding: 2rem 0 4rem;
+        text-align: center;
+        color: #ff7d8b;
+        font-size: 0.9rem;
+        margin-top: 3rem;
+        position: relative;
+        z-index: 10;
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 1.8rem;
+        }
+
+        .header-content {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .modal-content {
+          padding: 1.5rem;
+        }
+
+        .sidebar {
+          width: 280px;
+          left: -280px;
+        }
+
+        .sidebar-toggle {
+          top: 15px;
+          left: 15px;
+        }
+
+        .edit-button {
+          right: 12px;
+          bottom: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grid-overlay"></div>
+
+    <!-- Sidebar Toggle Button -->
+    <button
+      class="sidebar-toggle"
+      id="sidebarToggle"
+      aria-label="Toggle Sidebar"
+    >
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </button>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h2>Navigation</h2>
+        <p>Quick Access</p>
+      </div>
+
+      <div class="sidebar-section">
+        <h3 class="sidebar-section-title">Project Pages</h3>
+        <ul class="sidebar-nav">
+          <li>
+            <a href="functional-projects.html">Functional Projects</a>
+          </li>
+          <li>
+            <a href="#" class="disabled">
+              In Progress
+              <span class="coming-soon-badge">Coming Soon</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="disabled">
+              Upcoming
+              <span class="coming-soon-badge">Coming Soon</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="disabled">
+              Completed
+              <span class="coming-soon-badge">Coming Soon</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar-section">
+        <h3 class="sidebar-section-title">Additional</h3>
+        <ul class="sidebar-nav">
+          <li>
+            <a href="#" class="disabled">
+              Developers
+              <span class="coming-soon-badge">Coming Soon</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <header>
+      <div class="container">
+        <div class="header-content">
+          <a href="index.html" class="back-button">← Back to Home</a>
+          <h1>Functional Projects</h1>
+          <button
+            class="edit-projects-button"
+            id="editProjectsButton"
+            style="display: none"
+          >
+            Edit Projects
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <div class="page-header">
+          <h2>Active Functional Projects</h2>
+          <p>Projects that are currently live and operational</p>
+        </div>
+
+        <div class="projects-container">
+          <div class="empty-state" id="emptyState">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+            <h3>No Projects Yet</h3>
+            <p>
+              Click the edit icon in the footer to add your first functional
+              project
+            </p>
+          </div>
+          <ul class="project-list" id="projectList"></ul>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container">
+        <p>&copy; 2025 Sync Group | Personal Project Portfolio</p>
+      </div>
+    </footer>
+
+    <!-- Floating Edit Button -->
+    <button
+      class="edit-button"
+      id="editButton"
+      aria-label="Edit Mode"
+      title="Edit Mode"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          d="M16.862 3.487l3.651 3.651a1.75 1.75 0 010 2.475l-9.62 9.62a1.75 1.75 0 01-.828.462l-4.17.96a.75.75 0 01-.9-.9l.96-4.17c.085-.37.27-.71.53-.972l9.62-9.62a1.75 1.75 0 012.457 0zM14.75 5.6L6.06 14.29a.25.25 0 00-.06.1l-.64 2.78 2.78-.64a.25.25 0 00.1-.06l8.69-8.69-2.18-2.18z"
+        />
+      </svg>
+      <span class="visually-hidden">Edit Mode</span>
+    </button>
+
+    <!-- Authentication Modal -->
+    <div class="modal" id="authModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Authentication Required</h2>
+          <p>Enter password to enable edit mode</p>
+        </div>
+        <form id="authForm">
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter your password"
+              required
+            />
+            <div class="error-message" id="authError">
+              Incorrect password. Please try again.
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="cancelAuth">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">Authenticate</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Add Project Modal -->
+    <div class="modal" id="addProjectModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Add New Project</h2>
+          <p>Enter project details below</p>
+        </div>
+        <form id="addProjectForm">
+          <div class="form-group">
+            <label for="projectName">Project Name</label>
+            <input
+              type="text"
+              id="projectName"
+              placeholder="Enter project name"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="projectDescription">Description</label>
+            <textarea
+              id="projectDescription"
+              placeholder="Enter project description"
+              required
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label for="projectUrl">URL</label>
+            <input
+              type="url"
+              id="projectUrl"
+              placeholder="https://example.com"
+              required
+            />
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="cancelAdd">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">Add Project</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Edit Project Modal -->
+    <div class="modal" id="editProjectModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Edit Project</h2>
+          <p>Update project details or delete</p>
+        </div>
+        <form id="editProjectForm">
+          <input type="hidden" id="editProjectIndex" />
+          <div class="form-group">
+            <label for="editProjectName">Project Name</label>
+            <input
+              type="text"
+              id="editProjectName"
+              placeholder="Enter project name"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="editProjectDescription">Description</label>
+            <textarea
+              id="editProjectDescription"
+              placeholder="Enter project description"
+              required
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label for="editProjectUrl">URL</label>
+            <input
+              type="url"
+              id="editProjectUrl"
+              placeholder="https://example.com"
+              required
+            />
+          </div>
+          <div class="form-actions">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              id="deleteProjectBtn"
+            >
+              Delete
+            </button>
+            <div style="flex: 1"></div>
+            <button type="button" class="btn btn-secondary" id="cancelEdit">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // Sidebar toggle functionality
+      const sidebarToggle = document.getElementById("sidebarToggle");
+      const sidebar = document.getElementById("sidebar");
+      const sidebarOverlay = document.getElementById("sidebarOverlay");
+
+      function toggleSidebar() {
+        sidebarToggle.classList.toggle("active");
+        sidebar.classList.toggle("active");
+        sidebarOverlay.classList.toggle("active");
+      }
+
+      sidebarToggle?.addEventListener("click", toggleSidebar);
+      sidebarOverlay?.addEventListener("click", toggleSidebar);
+
+      // Close sidebar on ESC key
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && sidebar.classList.contains("active")) {
+          toggleSidebar();
+        }
+      });
+
+      // Prevent disabled links from doing anything
+      document.querySelectorAll(".sidebar-nav a.disabled").forEach((link) => {
+        link.addEventListener("click", function (e) {
+          e.preventDefault();
+        });
+      });
+
+      // Configuration
+      const _0x4a2c = atob("U2M0bm4zcjE=");
+
+      // State management
+      let isAuthenticated = false;
+      let isEditMode = false;
+      let projects = [];
+
+      // DOM elements
+      const editButton = document.getElementById("editButton");
+      const authModal = document.getElementById("authModal");
+      const addProjectModal = document.getElementById("addProjectModal");
+      const editProjectModal = document.getElementById("editProjectModal");
+      const authForm = document.getElementById("authForm");
+      const addProjectForm = document.getElementById("addProjectForm");
+      const editProjectForm = document.getElementById("editProjectForm");
+      const passwordInput = document.getElementById("password");
+      const authError = document.getElementById("authError");
+      const projectList = document.getElementById("projectList");
+      const emptyState = document.getElementById("emptyState");
+      const cancelAuth = document.getElementById("cancelAuth");
+      const cancelAdd = document.getElementById("cancelAdd");
+      const cancelEdit = document.getElementById("cancelEdit");
+      const deleteProjectBtn = document.getElementById("deleteProjectBtn");
+      const editProjectsButton = document.getElementById("editProjectsButton");
+
+      // Load projects from localStorage
+      function loadProjects() {
+        const stored = localStorage.getItem("functionalProjects");
+        projects = stored ? JSON.parse(stored) : [];
+        renderProjects();
+      }
+
+      // Save projects to localStorage
+      function saveProjects() {
+        localStorage.setItem("functionalProjects", JSON.stringify(projects));
+        renderProjects();
+      }
+
+      // Render projects
+      function renderProjects() {
+        if (projects.length === 0) {
+          emptyState.style.display = "block";
+          projectList.style.display = "none";
+        } else {
+          emptyState.style.display = "none";
+          projectList.style.display = "block";
+          projectList.innerHTML = projects
+            .map(
+              (project, index) => `
+            <li class="project-item${
+              isAuthenticated ? " editable" : ""
+            }" data-index="${index}" onclick="${
+                isAuthenticated ? `handleProjectClick(${index})` : ""
+              }">
+              <div class="project-icon">
+                <img src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(
+                  project.url
+                )}&sz=64" alt="${escapeHtml(
+                project.name
+              )} icon" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23ff7d8b%22 stroke-width=%222%22%3E%3Cpath d=%22M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z%22/%3E%3C/svg%3E'" />
+              </div>
+              <div class="project-content">
+                <div class="project-name">
+                  <a href="${escapeHtml(
+                    project.url
+                  )}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();">${escapeHtml(
+                project.name
+              )}</a>
+                </div>
+                <div class="project-description">${escapeHtml(
+                  project.description
+                )}</div>
+              </div>
+            </li>
+          `
+            )
+            .join("");
+        }
+      }
+
+      // Escape HTML to prevent XSS
+      function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      // Edit button click - directly open add project modal
+      editButton.addEventListener("click", () => {
+        if (!isAuthenticated) {
+          authModal.classList.add("active");
+          passwordInput.focus();
+        } else {
+          addProjectModal.classList.add("active");
+          document.getElementById("projectName").focus();
+        }
+      });
+
+      // Authentication form submit
+      authForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const password = passwordInput.value;
+
+        if (password === _0x4a2c) {
+          isAuthenticated = true;
+          authModal.classList.remove("active");
+          authError.classList.remove("active");
+          passwordInput.value = "";
+          // Show Edit Projects button and open add project modal
+          showEditProjectsButton();
+          renderProjects();
+          addProjectModal.classList.add("active");
+          document.getElementById("projectName").focus();
+        } else {
+          authError.classList.add("active");
+          passwordInput.value = "";
+          passwordInput.focus();
+        }
+      });
+
+      // Cancel authentication
+      cancelAuth.addEventListener("click", () => {
+        authModal.classList.remove("active");
+        authError.classList.remove("active");
+        passwordInput.value = "";
+      });
+
+      // Enable edit mode
+      function enableEditMode() {
+        isEditMode = true;
+        editButton.classList.add("is-edit-mode");
+        editButton.setAttribute("aria-label", "Add Project");
+        editButton.setAttribute("title", "Add Project");
+        document.body.classList.add("edit-mode-active");
+        renderProjects();
+
+        // Change button click behavior
+        editButton.onclick = () => {
+          addProjectModal.classList.add("active");
+          document.getElementById("projectName").focus();
+        };
+      }
+
+      // Disable edit mode
+      function disableEditMode() {
+        isEditMode = false;
+        editButton.classList.remove("is-edit-mode");
+        editButton.setAttribute("aria-label", "Edit Mode");
+        editButton.setAttribute("title", "Edit Mode");
+        document.body.classList.remove("edit-mode-active");
+        renderProjects();
+
+        // Reset button click behavior
+        editButton.onclick = null;
+      }
+
+      // Add project form submit
+      addProjectForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const name = document.getElementById("projectName").value.trim();
+        const description = document
+          .getElementById("projectDescription")
+          .value.trim();
+        const url = document.getElementById("projectUrl").value.trim();
+
+        if (name && description && url) {
+          projects.push({ name, description, url });
+          saveProjects();
+          addProjectModal.classList.remove("active");
+          addProjectForm.reset();
+        }
+      });
+
+      // Cancel add project
+      cancelAdd.addEventListener("click", () => {
+        addProjectModal.classList.remove("active");
+        addProjectForm.reset();
+      });
+
+      // Delete project
+      function deleteProject(index) {
+        if (confirm("Are you sure you want to delete this project?")) {
+          projects.splice(index, 1);
+          saveProjects();
+        }
+      }
+
+      // Handle project click (for edit mode)
+      function handleProjectClick(index) {
+        if (isAuthenticated) {
+          openEditModal(index);
+        }
+      }
+
+      // Open edit modal with project data
+      function openEditModal(index) {
+        const project = projects[index];
+        document.getElementById("editProjectIndex").value = index;
+        document.getElementById("editProjectName").value = project.name;
+        document.getElementById("editProjectDescription").value =
+          project.description;
+        document.getElementById("editProjectUrl").value = project.url;
+        editProjectModal.classList.add("active");
+        document.getElementById("editProjectName").focus();
+      }
+
+      // Edit Projects button toggle
+      editProjectsButton?.addEventListener("click", () => {
+        isEditMode = !isEditMode;
+        document.body.classList.toggle("edit-mode", isEditMode);
+        editProjectsButton.classList.toggle("active", isEditMode);
+        editProjectsButton.textContent = isEditMode
+          ? "Exit Edit Mode"
+          : "Edit Projects";
+      });
+
+      // Edit project form submit
+      editProjectForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const index = parseInt(
+          document.getElementById("editProjectIndex").value
+        );
+        const name = document.getElementById("editProjectName").value.trim();
+        const description = document
+          .getElementById("editProjectDescription")
+          .value.trim();
+        const url = document.getElementById("editProjectUrl").value.trim();
+
+        if (name && description && url) {
+          projects[index] = { name, description, url };
+          saveProjects();
+          editProjectModal.classList.remove("active");
+          editProjectForm.reset();
+        }
+      });
+
+      // Cancel edit
+      cancelEdit.addEventListener("click", () => {
+        editProjectModal.classList.remove("active");
+        editProjectForm.reset();
+      });
+
+      // Delete from edit modal
+      deleteProjectBtn.addEventListener("click", () => {
+        const index = parseInt(
+          document.getElementById("editProjectIndex").value
+        );
+        if (confirm("Are you sure you want to delete this project?")) {
+          projects.splice(index, 1);
+          saveProjects();
+          editProjectModal.classList.remove("active");
+          editProjectForm.reset();
+        }
+      });
+
+      // Show Edit Projects button after authentication
+      function showEditProjectsButton() {
+        if (isAuthenticated && editProjectsButton) {
+          editProjectsButton.style.display = "block";
+        }
+      }
+
+      // Close modals on ESC key
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          authModal.classList.remove("active");
+          addProjectModal.classList.remove("active");
+          editProjectModal.classList.remove("active");
+          authError.classList.remove("active");
+          passwordInput.value = "";
+          addProjectForm.reset();
+          editProjectForm.reset();
+        }
+      });
+
+      // Close modals on background click
+      [authModal, addProjectModal, editProjectModal].forEach((modal) => {
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) {
+            modal.classList.remove("active");
+            authError.classList.remove("active");
+            passwordInput.value = "";
+            addProjectForm.reset();
+            editProjectForm.reset();
+          }
+        });
+      });
+
+      // Initialize
+      loadProjects();
+
+      // Check if already authenticated and show button
+      if (isAuthenticated) {
+        showEditProjectsButton();
+      }
+    </script>
+  </body>
+</html>
